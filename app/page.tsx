@@ -1,39 +1,62 @@
-import Link from "next/link"
+"use client"
 
-import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
+import { Card, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import Image from "next/image"
+import { Mail, ThumbsDown, ThumbsUp } from "lucide-react"
+import { useVoteStore } from "@/store/ValueStore"
 
-export default function IndexPage() {
+
+interface UserData {
+  name: string
+  email: string
+  avatar: string
+}
+
+export default function UserCard({ userData = {
+  name: "Ajay Bhargava",
+  email: "bhargava.ajay@gmail.com`",
+  avatar: "https://github.com/shadcn.png",
+} }: { userData?: UserData }) {
+  const { upVotes, downVotes, incrementUpVotes, incrementDownVotes, aggregateVotes } = useVoteStore();
+
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Beautifully designed components <br className="hidden sm:inline" />
-          built with Radix UI and Tailwind CSS.
-        </h1>
-        <p className="max-w-[700px] text-lg text-muted-foreground">
-          Accessible and customizable components that you can copy and paste
-          into your apps. Free. Open Source. And Next.js 13 Ready.
-        </p>
-      </div>
-      <div className="flex gap-4">
-        <Link
-          href={siteConfig.links.docs}
-          target="_blank"
-          rel="noreferrer"
-          className={buttonVariants()}
-        >
-          Documentation
-        </Link>
-        <Link
-          target="_blank"
-          rel="noreferrer"
-          href={siteConfig.links.github}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          GitHub
-        </Link>
-      </div>
+    <section className="container min-h-screen grid place-items-center gap-6">
+      <Card className="max-w-[600px] min-h-[300px]">
+        <div className="grid grid-cols-[auto_1fr] items-center p-6 gap-6">
+          <Image src={userData.avatar} alt="User Avatar" width={150} height={150} className="rounded-full" />
+          <div className="text-left">
+            <CardTitle className="text-4xl font-bold">{userData.name}</CardTitle>
+            <CardDescription className="text-muted-foreground text-sm pt-2 flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              {userData.email}
+            </CardDescription>
+            <CardContent className="mt-6 pl-0">
+              <span className="block max-w-full">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+              </span>
+            </CardContent>
+            <CardFooter className="flex justify-end gap-4">
+              <div className="flex items-center gap-1">
+                <ThumbsUp 
+                  className="h-4 w-4 cursor-pointer transition-all hover:text-green-500 hover:scale-110"
+                  onClick={incrementUpVotes}
+                />
+                <span className="text-sm text-green-500">+{upVotes}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <ThumbsDown 
+                  className="h-4 w-4 cursor-pointer transition-all hover:text-red-500 hover:scale-110"
+                  onClick={incrementDownVotes}
+                />
+                <span className="text-sm text-red-500">-{downVotes}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-gray-500">Aggregate Votes: {aggregateVotes}</span>
+              </div>
+            </CardFooter> 
+          </div>
+        </div>
+      </Card>
     </section>
   )
 }
